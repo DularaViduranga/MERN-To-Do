@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './App.css';  // Import the CSS file
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState('');
 
-  // data ganna backend eken
   const fetchTasks = async () => {
     try {
       const res = await axios.get('http://localhost:5000/api/tasks');
@@ -16,10 +16,9 @@ function App() {
   };
 
   useEffect(() => {
-    fetchTasks(); // page eka load una gaman run wenawa
+    fetchTasks();
   }, []);
 
-  // new task ekak add karanna
   const addTask = async () => {
     if (!title) return alert("Please enter a title");
     try {
@@ -31,7 +30,6 @@ function App() {
     }
   };
 
-  // task ekak delete karanna
   const deleteTask = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/tasks/${id}`);
@@ -41,7 +39,6 @@ function App() {
     }
   };
 
-  // task ekak complete/undo karanna
   const toggleCompleted = async (task) => {
     try {
       const res = await axios.put(`http://localhost:5000/api/tasks/${task._id}`, {
@@ -54,37 +51,33 @@ function App() {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: 'auto', padding: 20 }}>
-      <h1>📝 To-Do App</h1>
+    <div className="app-container">
+      <h1 className="app-title">📝 To-Do App</h1>
 
-      <div style={{ marginBottom: 20 }}>
+      <div className="input-group">
         <input
           type="text"
           placeholder="Enter task title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          style={{ padding: 8, width: '70%' }}
         />
-        <button onClick={addTask} style={{ padding: 8, marginLeft: 10 }}>Add</button>
+        <button onClick={addTask}>Add</button>
       </div>
 
-      <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+      <ul className="task-list">
         {tasks.map((task) => (
-          <li key={task._id} style={{ marginBottom: 12 }}>
+          <li key={task._id}>
             <input
               type="checkbox"
               checked={task.completed}
               onChange={() => toggleCompleted(task)}
             />
-            <span style={{
-              marginLeft: 10,
-              textDecoration: task.completed ? 'line-through' : 'none',
-            }}>
+            <span className={`task-title ${task.completed ? 'completed' : ''}`}>
               {task.title}
             </span>
             <button
+              className="task-delete-btn"
               onClick={() => deleteTask(task._id)}
-              style={{ marginLeft: 20 }}
             >
               Delete
             </button>
